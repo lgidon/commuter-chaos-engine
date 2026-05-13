@@ -1,0 +1,12 @@
+[tool.ruff]
+# Target Python version
+target-version = "py311"
+
+# Enable specific rule sets (Pyflakes, pycodestyle, isort)
+lint.select = ["F", "E", "W", "I"]
+
+# Ignore specific rules if you find them too annoying
+lint.ignore = ["E501"] # Ignore long lines
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]

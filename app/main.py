@@ -1,5 +1,6 @@
-import requests
 import time
+
+import requests
 
 TFL_API_URL = "https://api.tfl.gov.uk/Line/mode/tube/Status"
 
