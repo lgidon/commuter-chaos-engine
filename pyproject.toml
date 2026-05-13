@@ -10,3 +10,7 @@ lint.ignore = ["E501"] # Ignore long lines
 
 [tool.ruff.lint.isort]
 known-first-party = ["app"]
+
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
