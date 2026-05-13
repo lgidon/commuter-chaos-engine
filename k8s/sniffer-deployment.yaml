@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sniffer-deployment
+spec:
+  replicas: 2  # Showcasing scale!
+  selector:
+    matchLabels:
+      app: sniffer
+  template:
+    metadata:
+      labels:
+        app: sniffer
+    spec:
+      containers:
+      - name: sniffer
+        image: your-docker-hub/commuter-sniffer:latest
+        env:
+        - name: REDIS_HOST
+          value: "redis-service"  # K8s Internal DNS handles the routing
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "256Mi"
