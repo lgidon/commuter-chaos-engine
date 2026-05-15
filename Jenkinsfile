@@ -12,6 +12,7 @@ pipeline {
             steps {
                 // Inside the container, we don't need a venv!
                 sh 'pip install --no-cache-dir -r requirements.txt'
+		sh 'pip install ruff'
             }
         }
 
