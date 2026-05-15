@@ -1,46 +1,32 @@
 pipeline {
-    agent any 
-
-    environment {
-        // Ensuring Python knows where the app code is
-        PYTHONPATH = "${WORKSPACE}"
+    agent {
+        docker { 
+            image 'python:3.11-slim' 
+            // We use a specific version to ensure parity with our venv
+            args '-u root:root' 
+        }
     }
 
     stages {
-        stage('Checkout') {
+        stage('Install') {
             steps {
-                checkout scm
+                // Inside the container, we don't need a venv!
+                sh 'pip install --no-cache-dir -r requirements.txt'
             }
         }
 
-        stage('Install Dependencies') {
+        stage('Lint') {
             steps {
-                // We use --user to avoid permission issues on the Jenkins host
-                sh 'pip install --user -r requirements.txt'
+                // Ruff configuration is read from pyproject.toml[cite: 2]
+                sh 'ruff check app/'
             }
         }
 
-        stage('Static Analysis (Ruff)') {
+        stage('Test') {
             steps {
-                // This will fail the build if Ruff finds unfixable errors[cite: 2]
-                sh 'python3 -m ruff check app/'
+                // Pytest configuration is read from pyproject.toml[cite: 1]
+                sh 'pytest tests/'
             }
-        }
-
-        stage('Unit Tests (Pytest)') {
-            steps {
-                // This will fail the build if any test fails
-                sh 'python3 -m pytest tests/'
-            }
-        }
-    }
-
-    post {
-        always {
-            echo 'Pipeline execution complete.'
-        }
-        failure {
-            echo 'The build failed! Check the Ruff or Pytest logs above.'
         }
     }
 }
